@@ -7,47 +7,47 @@ Sneak look at Warcraft Rumble Screenshots
 
 ## The Sketch
 
-<center>
+<div align="center">
 <img alt="MainField" src="Assets/Docs/Sketch/0.png" width="550">
 
 _Pic 0. Main Field_
-</center>
+</div>
 
-<center>
+<div align="center">
 <img alt="Combat" src="Assets/Docs/Sketch/1.png" width="400">
 
 _Pic 1. Combat_
-</center>
+</div>
 
-<center>
+<div align="center">
 <img alt="FieldScroll" src="Assets/Docs/Sketch/2.png" width="500">
 
 _Pic 2. Field Scroll_
-</center>
+</div>
 
-<center>
+<div align="center">
 <img alt="DropAndLoot" src="Assets/Docs/Sketch/3.png" width="330">
 
 _Pic 3. Drop & Loot_
-</center>
+</div>
 
-<center>
+<div align="center">
 <img alt="AICamp" src="Assets/Docs/Sketch/4.png" width="330">
 
 _Pic 4. AI Camp_
-</center>
+</div>
 
-<center>
+<div align="center">
 <img alt="WinDefeat" src="Assets/Docs/Sketch/5.png" width="500">
 
 _Pic 5. Win / Defeat_
-</center>
+</div>
 
-<center>
+<div align="center">
 <img alt="StartGame" src="Assets/Docs/Sketch/6.png" width="250">
 
 _Pic 6. Start the Game_
-</center>
+</div>
 
 ## 3rd party assets
 
