@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7666628545631359754}
-  - component: {fileID: 302181639676928703}
+  - component: {fileID: 6633106074316705443}
   m_Layer: 0
   m_Name: PlayerCamp
   m_TagString: Untagged
@@ -32,7 +32,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &302181639676928703
+--- !u!114 &6633106074316705443
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -41,7 +41,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 5626313744923620107}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 65fab90a4910e174a8fd6f3777528614, type: 3}
+  m_Script: {fileID: 11500000, guid: be20d82c7bb7cbd46809d15a292f9c19, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyCampGO: {fileID: 0}
