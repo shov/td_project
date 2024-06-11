@@ -9,8 +9,9 @@ public class Tower : Entity
     public TowerPlace towerPlaceRef;
 
 
-    private void Start()
+    protected override void Start()
     {
+        base.Start();
         approachRange = 2.5f;
         // scale approach range by the bigger scale X/Z
         approachRange *= Mathf.Max(transform.localScale.x, transform.localScale.z);

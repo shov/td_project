@@ -14,10 +14,15 @@ public class Unit : Entity
     private SphereCollider sphereCollider;
     public GameObject enemy;
 
+    // Attack
+    public int damage = 10;
+    public float attackRate = 1.0f;
+    Coroutine attackCoroutine = null;
+
     // Animation
     Animator animator;
 
-    private void Awake()
+    protected void Awake()
     {
         navMeshAgent = GetComponent<NavMeshAgent>();
         animator = GetComponentInChildren<Animator>();
@@ -29,7 +34,7 @@ public class Unit : Entity
         this.route = route;
     }
 
-    private void FixedUpdate()
+    protected void FixedUpdate()
     {
         Move();
     }
@@ -69,6 +74,7 @@ public class Unit : Entity
         // Switch to the next waypoint if no enemy
         if (arrived && null == enemy)
         {
+            navMeshAgent.enabled = true;
             currentWayPointIndex++;
             if (currentWayPointIndex >= route.wayPointList.Length)
             {
@@ -76,8 +82,26 @@ public class Unit : Entity
             }
         } else if (arrived && null != enemy)
         {
-            // Stop
-            navMeshAgent.SetDestination(transform.position);
+            navMeshAgent.SetDestination(transform.position); // it's not a proper way to stop
+            navMeshAgent.velocity = Vector3.zero;
+            navMeshAgent.isStopped = true;
+            navMeshAgent.enabled = false;
+
+            animator.SetBool("isFight", true);
+            if (attackCoroutine == null)
+            {
+                attackCoroutine = StartCoroutine(Attack());
+            }
+        } else if (!arrived && null != enemy)
+        {
+            // No fight, but take closer
+            animator.SetBool("isFight", false);
+            if(null != attackCoroutine)
+            {
+                StopCoroutine(attackCoroutine);
+                attackCoroutine = null;
+            }
+            navMeshAgent.enabled = true;
         }
 
         // Get velocity from navMeshAgent
@@ -88,11 +112,22 @@ public class Unit : Entity
 
     private void OnTriggerEnter(Collider collider)
     {
-        if (collider.gameObject.CompareTag(relativeEnemyTag))
+        if (collider.gameObject.CompareTag(relativeEnemyTag) && null == enemy)
         {
             enemy = collider.gameObject;
-            animator.SetBool("isFight", true);
             enemy.GetComponent<Entity>().onDeath += OnEnemyDeath;
+        }
+    }
+
+    IEnumerator Attack()
+    {
+        while (true)
+        {
+            if (enemy != null)
+            {
+                enemy.GetComponent<Entity>().TakeDamage(damage);
+            }
+            yield return new WaitForSeconds(attackRate);
         }
     }
 

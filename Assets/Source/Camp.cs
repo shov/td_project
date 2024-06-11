@@ -20,6 +20,8 @@ public abstract class Camp : MonoBehaviour
 
     public abstract string campTag { get; }
 
+    public Camera fieldCam;
+
     // Units
     public Route route;
     public Unit swordmanPrefab;
@@ -43,6 +45,7 @@ public abstract class Camp : MonoBehaviour
         {
             Vector3 dropPosition = route.wayPointList[0].GetComponent<Transform>().position;
             Unit newUnit = Instantiate(swordmanPrefab, dropPosition, Quaternion.identity);
+            newUnit.SetFieldCam(fieldCam);
             newUnit.GetComponent<NavMeshAgent>().avoidancePriority = NavMeshPriorityManager.IssueNewPriority();
             newUnit.SetRoute(route);
 
@@ -71,6 +74,7 @@ public abstract class Camp : MonoBehaviour
         }
 
         Tower newTower = Instantiate(towerPrefab, towerPlace.transform.position, Quaternion.identity);
+        newTower.SetFieldCam(fieldCam);
         // scale the same scale as the tower place
         newTower.transform.localScale = towerPlace.transform.localScale;
         newTower.tag = campTag;
