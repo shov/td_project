@@ -53,17 +53,25 @@ public class Unit : Entity
 
         // To the next waypoint or an enemy
         Vector3 targetDestination = route.wayPointList[currentWayPointIndex].transform.position;
-        if(enemy != null)
+        if (enemy != null)
         {
             targetDestination = enemy.transform.position;
+        }
+        else if (enemy == null)
+        {
+            // make sure navmeshagent is enabled
+            navMeshAgent.enabled = true;
         }
 
         // Stop at
         float stopDistance = (null == enemy ? approachRange : enemy.GetComponent<Entity>().approachRange);
 
-        // Go
-        if (Vector3.Distance(transform.position, targetDestination) > stopDistance)
-            navMeshAgent.SetDestination(targetDestination);
+        if (navMeshAgent.enabled == true)
+        {
+            // Go
+            if (Vector3.Distance(transform.position, targetDestination) > stopDistance)
+                navMeshAgent.SetDestination(targetDestination);
+        }
 
         // Look at
         transform.LookAt(targetDestination);
@@ -80,23 +88,27 @@ public class Unit : Entity
             {
                 currentWayPointIndex = 0;
             }
-        } else if (arrived && null != enemy)
+        }
+        else if (arrived && null != enemy)
         {
-            navMeshAgent.SetDestination(transform.position); // it's not a proper way to stop
-            navMeshAgent.velocity = Vector3.zero;
-            navMeshAgent.isStopped = true;
-            navMeshAgent.enabled = false;
+            if (navMeshAgent.enabled)
+            {
+                navMeshAgent.SetDestination(transform.position); // it's not a proper way to stop
+                navMeshAgent.velocity = Vector3.zero;
+                navMeshAgent.enabled = false;
+            }
 
             animator.SetBool("isFight", true);
             if (attackCoroutine == null)
             {
                 attackCoroutine = StartCoroutine(Attack());
             }
-        } else if (!arrived && null != enemy)
+        }
+        else if (!arrived && null != enemy)
         {
             // No fight, but take closer
             animator.SetBool("isFight", false);
-            if(null != attackCoroutine)
+            if (null != attackCoroutine)
             {
                 StopCoroutine(attackCoroutine);
                 attackCoroutine = null;
@@ -110,12 +122,35 @@ public class Unit : Entity
         animator.SetInteger("move", move);
     }
 
-    private void OnTriggerEnter(Collider collider)
+    private void OnTriggerEnter(Collider other)
     {
-        if (collider.gameObject.CompareTag(relativeEnemyTag) && null == enemy)
+        Aggresive(other);
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        Aggresive(other);
+    }
+
+    protected void Aggresive(Collider other)
+    {
+        if (other.gameObject.CompareTag(relativeEnemyTag) && null == enemy)
         {
-            enemy = collider.gameObject;
-            enemy.GetComponent<Entity>().onDeath += OnEnemyDeath;
+            if (
+                null == enemy
+                ||
+                (Vector3.Distance(transform.position, enemy.transform.position)
+                    > Vector3.Distance(transform.position, other.GetComponent<Transform>().position))
+            )
+            {
+                if (enemy)
+                {
+                    // Unsubscribe from the previous enemy first
+                    enemy.GetComponent<Entity>().onDeath -= OnEnemyDeath;
+                }
+                enemy = other.gameObject;
+                enemy.GetComponent<Entity>().onDeath += OnEnemyDeath;
+            }
         }
     }
 
@@ -133,6 +168,16 @@ public class Unit : Entity
 
     private void OnEnemyDeath(Entity entity)
     {
+        if (null != attackCoroutine)
+        {
+            StopCoroutine(attackCoroutine);
+            attackCoroutine = null;
+        }
+        if (gameObject == null)
+        {
+            return;
+        }
+
         entity.onDeath -= OnEnemyDeath;
         enemy = null;
         animator.SetBool("isFight", false);
@@ -153,6 +198,8 @@ public class Unit : Entity
 
     private void OnDrawGizmos()
     {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, approachRange);
     }
 
     private void OnDrawGizmosSelected()

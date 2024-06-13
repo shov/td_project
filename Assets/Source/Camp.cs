@@ -46,7 +46,10 @@ public abstract class Camp : MonoBehaviour
             Vector3 dropPosition = route.wayPointList[0].GetComponent<Transform>().position;
             Unit newUnit = Instantiate(swordmanPrefab, dropPosition, Quaternion.identity);
             newUnit.SetFieldCam(fieldCam);
-            newUnit.GetComponent<NavMeshAgent>().avoidancePriority = NavMeshPriorityManager.IssueNewPriority();
+            int priority = NavMeshPriorityManager.IssueNewPriority();
+            Debug.Log("Set Priority: " + priority + " to unit " + newUnit.name);
+            newUnit.GetComponent<NavMeshAgent>().avoidancePriority = priority;
+
             newUnit.SetRoute(route);
 
             newUnit.tag = campTag;
@@ -87,6 +90,7 @@ public abstract class Camp : MonoBehaviour
 
     private void OnUnitDeath(Entity entity)
     {
+        entity.onDeath -= OnUnitDeath;
         int priority = entity.GetComponent<NavMeshAgent>().avoidancePriority;
         NavMeshPriorityManager.ReleasePriority(priority);
         entitySet.Remove(entity);
@@ -94,6 +98,7 @@ public abstract class Camp : MonoBehaviour
 
     private void OnTowerDeath(Entity entity)
     {
+        entity.onDeath -= OnTowerDeath;
         entitySet.Remove(entity);
         towerDict.Remove(entity.GetComponent<Tower>().towerPlaceRef);
     }

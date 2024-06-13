@@ -39,7 +39,7 @@ public class Entity : MonoBehaviour
         if (hpBar != null)
         {
             // Look at the camera
-            hpBar.transform.LookAt(fieldCam.transform.position + fieldCam.transform.forward);
+            hpBar.transform.LookAt(fieldCam.transform.position);
         }
     }
 
