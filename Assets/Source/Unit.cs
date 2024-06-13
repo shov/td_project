@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -7,14 +6,17 @@ public class Unit : Entity
 {
     // Movement
     Route route;
-    NavMeshAgent navMeshAgent;
     int currentWayPointIndex = 0;
+    Vector3 currDestination;
+    Coroutine moveCorutine;
+    Vector3[] pathPointList;
+    NavMeshPath navMeshPath;
 
-    // Agresive
+    // Attack
     private SphereCollider sphereCollider;
     public GameObject enemy;
 
-    // Attack
+    // Fight
     public int damage = 10;
     public float attackRate = 1.0f;
     Coroutine attackCoroutine = null;
@@ -24,7 +26,7 @@ public class Unit : Entity
 
     protected void Awake()
     {
-        navMeshAgent = GetComponent<NavMeshAgent>();
+
         animator = GetComponentInChildren<Animator>();
         sphereCollider = GetComponent<SphereCollider>();
     }
@@ -57,20 +59,21 @@ public class Unit : Entity
         {
             targetDestination = enemy.transform.position;
         }
-        else if (enemy == null)
-        {
-            // make sure navmeshagent is enabled
-            navMeshAgent.enabled = true;
-        }
+        else { }
+
 
         // Stop at
         float stopDistance = (null == enemy ? approachRange : enemy.GetComponent<Entity>().approachRange);
 
-        if (navMeshAgent.enabled == true)
+
+        // Go
+        if (currDestination != targetDestination)
         {
-            // Go
-            if (Vector3.Distance(transform.position, targetDestination) > stopDistance)
-                navMeshAgent.SetDestination(targetDestination);
+            if (null != moveCorutine)
+            {
+                StopCoroutine(moveCorutine);
+            }
+            MoveTo(targetDestination);
         }
 
         // Look at
@@ -82,7 +85,6 @@ public class Unit : Entity
         // Switch to the next waypoint if no enemy
         if (arrived && null == enemy)
         {
-            navMeshAgent.enabled = true;
             currentWayPointIndex++;
             if (currentWayPointIndex >= route.wayPointList.Length)
             {
@@ -91,17 +93,10 @@ public class Unit : Entity
         }
         else if (arrived && null != enemy)
         {
-            if (navMeshAgent.enabled)
-            {
-                navMeshAgent.SetDestination(transform.position); // it's not a proper way to stop
-                navMeshAgent.velocity = Vector3.zero;
-                navMeshAgent.enabled = false;
-            }
-
             animator.SetBool("isFight", true);
             if (attackCoroutine == null)
             {
-                attackCoroutine = StartCoroutine(Attack());
+                attackCoroutine = StartCoroutine(Fight());
             }
         }
         else if (!arrived && null != enemy)
@@ -113,26 +108,33 @@ public class Unit : Entity
                 StopCoroutine(attackCoroutine);
                 attackCoroutine = null;
             }
-            navMeshAgent.enabled = true;
         }
 
-        // Get velocity from navMeshAgent
-        Vector3 velocity = navMeshAgent.velocity;
-        int move = (int)(velocity.magnitude * 100);
-        animator.SetInteger("move", move);
     }
 
+    private void MoveTo(Vector3 destination)
+    {
+        
+    }
+
+    private IEnumerator MoveToRoutine()
+    {
+        yield return null;
+    }
+
+
+    // TODO colliders? 
     private void OnTriggerEnter(Collider other)
     {
-        Aggresive(other);
+        Attak(other);
     }
 
     private void OnTriggerStay(Collider other)
     {
-        Aggresive(other);
+        Attak(other);
     }
 
-    protected void Aggresive(Collider other)
+    protected void Attak(Collider other)
     {
         if (other.gameObject.CompareTag(relativeEnemyTag) && null == enemy)
         {
@@ -154,7 +156,7 @@ public class Unit : Entity
         }
     }
 
-    IEnumerator Attack()
+    IEnumerator Fight()
     {
         while (true)
         {
