@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace ECS.Infrastructure
+namespace Lib.ECS
 {
     public class Entity : MonoBehaviour
     {
@@ -14,6 +14,7 @@ namespace ECS.Infrastructure
         private int _id;
         private World _world;
 
+        #region Lifetime
         public void Init(World world)
         {
             this._id = world.CreateEntity();
@@ -31,5 +32,21 @@ namespace ECS.Infrastructure
             this._world = null;
             this._id = NO_ID;
         }
+        
+        #endregion
+        
+        #region Data
+
+        public void SetData<T>(T data) where T : struct
+        {
+            this._world.SetComponentData(this._id, ref data);
+        }
+
+        public ref T GetData<T>() where T : struct
+        {
+            return ref this._world.GetComponentData<T>(this._id);
+        }
+        
+        #endregion
     }
 }

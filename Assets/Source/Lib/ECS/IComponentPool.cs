@@ -1,8 +1,8 @@
-﻿namespace ECS.Infrastructure
+﻿namespace Lib.ECS
 {
     public interface IComponentPool
     {
-        void AllocateComponent();
+        void AllocateComponent(int id);
         void FreeComponent(int id);
     }
 }

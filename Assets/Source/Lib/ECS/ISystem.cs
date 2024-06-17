@@ -1,6 +1,4 @@
-﻿using Unity.VisualScripting;
-
-namespace ECS.Infrastructure
+﻿namespace Lib.ECS
 {
     public interface ISystem
     {

@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
+    #region legacy
+
     public static string PLAYER_TAG = "Player";
     public static string ENEMY_TAG = "Enemy";
 
@@ -27,7 +29,6 @@ public class GameManager : MonoBehaviour
     }
 
 
-
     // UI actions
     public void PlayerSpawnASwordman()
     {
@@ -48,4 +49,6 @@ public class GameManager : MonoBehaviour
     {
         enemyCamp.BuildTower();
     }
+
+    #endregion
 }
