@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Tower : Entity
+public class Tower : Entity_old
 {
     // Cannot move
     // Took a placeholder and event-linked to it

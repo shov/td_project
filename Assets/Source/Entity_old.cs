@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Entity : MonoBehaviour
+public class Entity_old : MonoBehaviour
 {
     // Health
     public int maxHP = 100;
@@ -16,7 +16,7 @@ public class Entity : MonoBehaviour
 
 
     // Events
-    public delegate void OnDeath(Entity entity);
+    public delegate void OnDeath(Entity_old entity);
     public event OnDeath onDeath;
 
     // Movement and Agro
@@ -36,11 +36,8 @@ public class Entity : MonoBehaviour
 
     protected virtual void LateUpdate()
     {
-        if (hpBar != null)
-        {
-            // Look at the camera
-            hpBar.transform.LookAt(fieldCam.transform.position);
-        }
+        // Look at the camera
+        hpBar?.transform.LookAt(fieldCam.transform.position);
     }
 
     public void SetFieldCam(Camera fieldCam)
@@ -55,11 +52,9 @@ public class Entity : MonoBehaviour
         // Set the color of the bar based on the gradient
         hpBar.color = hpGradient.Evaluate(hpBar.fillAmount);
 
-        if (hp <= 0)
-        {
-            // Invoke the event OnDeath and then destroy the object
-            onDeath?.Invoke(this);
-            Destroy(gameObject);
-        }
+        if (hp > 0) return;
+        // Invoke the event OnDeath and then destroy the object
+        onDeath?.Invoke(this);
+        Destroy(gameObject);
     }
 }

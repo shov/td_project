@@ -4,7 +4,7 @@ namespace Lib.ECS
 {
     public class Entity : MonoBehaviour
     {
-        public const int NO_ID = -1;
+        private const int NO_ID = -1;
 
         public int Id
         {

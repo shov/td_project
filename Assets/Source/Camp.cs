@@ -30,7 +30,7 @@ public abstract class Camp : MonoBehaviour
     public Dictionary<TowerPlace, Tower> towerDict = new Dictionary<TowerPlace, Tower>();
 
     // All entities
-    public HashSet<Entity> entitySet = new HashSet<Entity>();
+    public HashSet<Entity_old> entitySet = new HashSet<Entity_old>();
 
     public void Awake()
     {
@@ -86,7 +86,7 @@ public abstract class Camp : MonoBehaviour
         newTower.onDeath += OnTowerDeath;
     }
 
-    private void OnUnitDeath(Entity entity)
+    private void OnUnitDeath(Entity_old entity)
     {
         entity.onDeath -= OnUnitDeath;
         int priority = entity.GetComponent<NavMeshAgent>().avoidancePriority;
@@ -94,7 +94,7 @@ public abstract class Camp : MonoBehaviour
         entitySet.Remove(entity);
     }
 
-    private void OnTowerDeath(Entity entity)
+    private void OnTowerDeath(Entity_old entity)
     {
         entity.onDeath -= OnTowerDeath;
         entitySet.Remove(entity);

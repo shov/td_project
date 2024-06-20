@@ -2,7 +2,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class Unit : Entity
+public class Unit : Entity_old
 {
     // Movement
     Route route;
@@ -63,7 +63,7 @@ public class Unit : Entity
 
 
         // Stop at
-        float stopDistance = (null == enemy ? approachRange : enemy.GetComponent<Entity>().approachRange);
+        float stopDistance = (null == enemy ? approachRange : enemy.GetComponent<Entity_old>().approachRange);
 
 
         // Go
@@ -148,10 +148,10 @@ public class Unit : Entity
                 if (enemy)
                 {
                     // Unsubscribe from the previous enemy first
-                    enemy.GetComponent<Entity>().onDeath -= OnEnemyDeath;
+                    enemy.GetComponent<Entity_old>().onDeath -= OnEnemyDeath;
                 }
                 enemy = other.gameObject;
-                enemy.GetComponent<Entity>().onDeath += OnEnemyDeath;
+                enemy.GetComponent<Entity_old>().onDeath += OnEnemyDeath;
             }
         }
     }
@@ -162,13 +162,13 @@ public class Unit : Entity
         {
             if (enemy != null)
             {
-                enemy.GetComponent<Entity>().TakeDamage(damage);
+                enemy.GetComponent<Entity_old>().TakeDamage(damage);
             }
             yield return new WaitForSeconds(attackRate);
         }
     }
 
-    private void OnEnemyDeath(Entity entity)
+    private void OnEnemyDeath(Entity_old entity)
     {
         if (null != attackCoroutine)
         {
